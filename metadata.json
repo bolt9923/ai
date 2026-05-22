@@ -1,0 +1,8 @@
+{
+  "name": "ShinMusic",
+  "description": "Best-in-class full-stack music stream engine and control console, complete with group voice stream emulation, live visualizers, queue handling, and Gemini-powered smart music curation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
