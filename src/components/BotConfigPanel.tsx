@@ -27,6 +27,7 @@ export default function BotConfigPanel({
   const [copied, setCopied] = useState("");
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [revealVars, setRevealVars] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -60,7 +61,7 @@ export default function BotConfigPanel({
     setTimeout(() => setCopied(""), 2000);
   };
 
-  const sampleHerokuCmd = `heroku config:set tg_token="${form.botToken}" api_id="${form.apiId}" api_hash="${form.apiHash}" mongo_uri="${form.mongoDbUri}" stream_alt="${form.playbinAlternative}"`;
+  const sampleHerokuCmd = `heroku config:set BOT_TOKEN="${form.botToken}" API_ID="${form.apiId}" API_HASH="${form.apiHash}" LOG_GROUP_ID="${form.logGroupId}" MONGO_DB_URI="${form.mongoDbUri}" OWNER_ID="${form.ownerId}" STRING_SESSION="${form.stringSession}"`;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -129,7 +130,7 @@ export default function BotConfigPanel({
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-zinc-400">MongoDB URI Connection string</label>
+            <label className="text-xs font-semibold text-zinc-400">MongoDB URI Connection string_db</label>
             <input
               type="text"
               name="mongoDbUri"
@@ -139,6 +140,34 @@ export default function BotConfigPanel({
               placeholder="e.g. mongodb+srv://..."
               required
             />
+          </div>
+
+          <div className="flex flex-col gap-1.5 border border-purple-900/30 bg-purple-500/5 p-3 rounded-xl">
+            <label className="text-xs font-bold text-purple-300 flex items-center gap-1">🔑 Assistant Pyrogram String Session</label>
+            <input
+              type="text"
+              name="stringSession"
+              value={form.stringSession}
+              onChange={handleChange}
+              className="bg-zinc-950 border border-zinc-800 rounded-lg p-2 text-xs text-purple-300 font-mono focus:outline-none focus:border-purple-700 transition"
+              placeholder="Enter String Session for user assistant bot..."
+              required
+            />
+            <span className="text-[10px] text-zinc-500 font-medium">Allows assistant account to join and stream audio</span>
+          </div>
+
+          <div className="flex flex-col gap-1.5 border border-purple-900/30 bg-purple-500/5 p-3 rounded-xl">
+            <label className="text-xs font-bold text-purple-300 flex items-center gap-1">🆔 Telegram Group Log Channel ID</label>
+            <input
+              type="text"
+              name="logGroupId"
+              value={form.logGroupId}
+              onChange={handleChange}
+              className="bg-zinc-950 border border-zinc-800 rounded-lg p-2 text-xs text-purple-300 font-mono focus:outline-none focus:border-purple-700 transition"
+              placeholder="e.g. -1002048173921"
+              required
+            />
+            <span className="text-[10px] text-zinc-500 font-medium">To keep track of song command triggers & crashes</span>
           </div>
 
           <div className="flex flex-col gap-1.5">
@@ -307,6 +336,61 @@ export default function BotConfigPanel({
               Simulate One-Click Push Heroku
               <ArrowUpRight className="w-4 h-4" />
             </button>
+          </div>
+        </div>
+
+        {/* HEROKU REVEAL CONFIG VARS BOARD */}
+        <div id="heroku-reveal-config-vars" className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex flex-col gap-4 shadow-xl">
+          <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse"></span>
+              <h3 className="text-xs font-bold text-zinc-100 uppercase tracking-wider">
+                Heroku Config Vars (Reveal Mode)
+              </h3>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setRevealVars(prev => !prev);
+                onSimulateLogs(`[Heroku Console] Clicked Reveal Config Vars toggle.`);
+              }}
+              className="text-[10px] bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 px-2 py-1 rounded font-bold uppercase transition"
+            >
+              {revealVars ? "Hide Config Vars" : "Reveal Config Vars"}
+            </button>
+          </div>
+
+          <p className="text-[11px] text-zinc-400 leading-relaxed">
+            Fill these values inside your direct <strong>Heroku Dashboard → Settings → Reveal Config Vars</strong> dashboard to feed the bot successfully.
+          </p>
+
+          <div className="space-y-2">
+            {[
+              { key: "BOT_TOKEN", value: form.botToken },
+              { key: "API_ID", value: form.apiId },
+              { key: "API_HASH", value: form.apiHash },
+              { key: "MONGO_DB_URI", value: form.mongoDbUri },
+              { key: "OWNER_ID", value: form.ownerId },
+              { key: "STRING_SESSION", value: form.stringSession },
+              { key: "LOG_GROUP_ID", value: form.logGroupId },
+              { key: "STREAM_ALT", value: form.playbinAlternative }
+            ].map((v, idx) => (
+              <div key={idx} className="bg-zinc-950 p-2.5 rounded-lg border border-zinc-800 flex flex-col gap-1 transition-all hover:bg-zinc-900/40 w-full">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-bold text-zinc-300">{v.key}</span>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(v.value, v.key)}
+                    className="text-[9px] text-emerald-400 hover:text-white font-mono"
+                  >
+                    {copied === v.key ? "Copied!" : "Copy"}
+                  </button>
+                </div>
+                <div className="font-mono text-[10px] break-all select-all text-purple-300">
+                  {revealVars ? v.value : "••••••••••••••••••••••••••••••••"}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
