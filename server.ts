@@ -30,6 +30,8 @@ let currentConfig: BotConfig = {
   apiHash: "f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6",
   mongoDbUri: "mongodb+srv://shinu_user:secure_password_99@shinmusic.mongodb.net/shinu_db",
   ownerId: "612749102",
+  stringSession: "BQG1_z8Aas-2Z_lTzqS0X1kLaA92_f_hU1z7aHk928fkaH_zla91fka9...RENAME_ME",
+  logGroupId: "-1002048173921",
   herokuAppName: "shinmusic-bot-shinya",
   herokuApiKey: "h_8ca281fe910df7a6b2c34d5e6f7a8b9c0d1e",
   streamQuality: "High",
