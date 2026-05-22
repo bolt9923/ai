@@ -19,6 +19,8 @@ export interface BotConfig {
   apiHash: string;
   mongoDbUri: string;
   ownerId: string;
+  stringSession: string; // Pyrogram String Session for assistant
+  logGroupId: string;    // Log Group/Channel ID
   herokuAppName: string;
   herokuApiKey: string;
   streamQuality: "High" | "Medium" | "Low";
